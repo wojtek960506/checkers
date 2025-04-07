@@ -114,6 +114,9 @@ body {
   height: 50px;
   width: 50px;
   border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .board-white {
@@ -130,4 +133,18 @@ body {
 
 .board-button.board-black:hover {
   background: #495c97;
+}
+
+.white-pawn {
+  height: 40px;
+  width: 40px;
+  background-color: rgb(216, 216, 216);
+  border-radius: 40px;
+}
+
+.black-pawn {
+  height: 40px;
+  width: 40px;
+  background-color: rgb(16, 16, 16);
+  border-radius: 40px;
 }
