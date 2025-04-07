@@ -1,10 +1,7 @@
 // personal access token wz_token_08_03_25
 // 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
 
-const board = document.getElementById('board');
-
-
-
+const boardEl = document.getElementById('board');
 
 const BOARD_HEIGHT = 8;
 const BOARD_WIDTH = 8;
@@ -136,9 +133,9 @@ const drawBoardWithInfo = () => {
   boardWithInfoColumns.appendChild(drawBoard());
   boardWithInfoColumns.append(drawBoardInfoColumn(false));
 
-  board.appendChild(drawBoardInfoRow(true));
-  board.appendChild(boardWithInfoColumns);
-  board.appendChild(drawBoardInfoRow(false));
+  boardEl.appendChild(drawBoardInfoRow(true));
+  boardEl.appendChild(boardWithInfoColumns);
+  boardEl.appendChild(drawBoardInfoRow(false));
 }
 
 drawBoardWithInfo();
@@ -146,5 +143,5 @@ drawBoardWithInfo();
 
 // drawInitialCheckerPawns();
 
-const boardLogic = calculateInitialBoard();
-consoleLogBoard(boardLogic);
+const board = calculateInitialBoard();
+consoleLogBoard(board);
