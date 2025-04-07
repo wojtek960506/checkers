@@ -3,8 +3,45 @@
 
 const board = document.getElementById('board');
 
+
+
+
 const BOARD_HEIGHT = 8;
 const BOARD_WIDTH = 8;
+
+const calculateInitialBoard = () => {
+  const board = [];
+  for (let i = 0; i < BOARD_HEIGHT; i++) {
+    const boardRow = [];
+    for (let j = 0; j < BOARD_WIDTH; j++) {
+      boardRow.push('*');
+    }
+    board.push(boardRow);
+  }
+  return board;
+}
+
+
+const getBoardInfoLetters = () => {
+  const letters = [];
+  for (let i = 0 ; i < BOARD_WIDTH ; i++) {
+    letters.push(String.fromCharCode(65 + i));
+  }
+  return `& ${letters.join(' ')} &`;
+}
+
+const consoleLogBoard = (board) => {
+  let result = '';
+
+  result += `${getBoardInfoLetters()}\n`;
+  for (const [index, row] of board.entries()) {
+    result += `${index + 1} `;
+    result += row.join(' ')
+    result += ` ${index + 1}\n`;
+  }
+  result += `${getBoardInfoLetters()}\n`;
+  console.log(result);
+}
 
 const isWhite = (row, column) => {
   if (row % 2 !== 0) {
@@ -73,6 +110,7 @@ const drawBoard = () => {
     
     for (let j = 0 ; j < BOARD_WIDTH ; j++) {
       const boardButton = document.createElement('button');
+      
       boardButton.id = `board-button-${j}-${i}` // (x - row, y - column)
       boardButton.className = 'board-button';
       if (isWhite(i, j)) {
@@ -104,3 +142,9 @@ const drawBoardWithInfo = () => {
 }
 
 drawBoardWithInfo();
+
+
+// drawInitialCheckerPawns();
+
+const boardLogic = calculateInitialBoard();
+consoleLogBoard(boardLogic);
