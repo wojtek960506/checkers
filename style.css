@@ -127,10 +127,6 @@ body {
   background: #263561;
 }
 
-.board-button.board-white:hover {
-  background: #c4b5ad;
-}
-
 .board-button.board-black:hover {
   background: #495c97;
 }

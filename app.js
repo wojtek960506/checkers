@@ -1,74 +1,16 @@
 // personal access token wz_token_08_03_25
 // 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
 
-const boardEl = document.getElementById('board');
+import { consoleLogBoard } from "./logic/consoleLogBoard.js";
+import { calculateInitialBoard } from "./logic/calculateInitialBoard.js";
 
 const BOARD_HEIGHT = 8;
 const BOARD_WIDTH = 8;
 
-const calculateInitialBoard = () => {
-  const board = [];
-  for (let i = 0; i < BOARD_HEIGHT; i++) {
-    const boardRow = [];
-    for (let j = 0; j < BOARD_WIDTH; j++) {
-      boardRow.push('*');
-    }
-    board.push(boardRow);
-  }
+const boardEl = document.getElementById('board');
+const board = calculateInitialBoard(BOARD_HEIGHT, BOARD_WIDTH);
 
-  // draw white pawns (last 3 rows)
-  for (let i = BOARD_HEIGHT - 1 ; i > BOARD_HEIGHT - 4 ; i--) {
-    for (let j = 0 ; j < BOARD_WIDTH; j++) {
-      if ((i + j) % 2 != 0) board[i][j] = 'W'; 
-    }
-  }
-
-  // draw black pawns (first 3 rows)
-  for (let i = 0 ; i < 3 ; i++) {
-    for (let j = 0 ; j < BOARD_WIDTH; j++) {
-      if ((i + j) % 2 != 0) board[i][j] = 'B';
-    }
-  }
-
-
-  
-
-  return board;
-}
-
-const board = calculateInitialBoard();
-
-
-const getBoardInfoLetters = () => {
-  const letters = [];
-  for (let i = 0 ; i < BOARD_WIDTH ; i++) {
-    letters.push(String.fromCharCode(65 + i));
-  }
-  return `& ${letters.join(' ')} &`;
-}
-
-const consoleLogBoard = (board) => {
-  let result = '';
-
-  result += `${getBoardInfoLetters()}\n`;
-  for (const [index, row] of board.entries()) {
-    result += `${index + 1} `;
-    result += row.join(' ')
-    result += ` ${index + 1}\n`;
-  }
-  result += `${getBoardInfoLetters()}\n`;
-  console.log(result);
-}
-
-const isWhite = (row, column) => {
-  if (row % 2 !== 0) {
-    if (column % 2 !== 0) return true;
-    return false; 
-  } else {
-    if (column % 2 !== 0) return false;
-    return true;
-  }
-}
+const isWhite = (row, column) => (row + column) % 2 === 0;
 
 const drawBoardInfoColumn = (isLeft) => {
   const boardInfoColumn = document.createElement('div');
@@ -130,11 +72,15 @@ const drawBoard = () => {
       
       boardButton.id = `board-button-${j}-${i}` // (x - row, y - column)
       boardButton.className = 'board-button';
-      if (isWhite(i, j)) {
-        boardButton.classList.add('board-white');
-      } else {
+      if (!isWhite(i, j)) {
+         
         boardButton.classList.add('board-black');
-      }
+        boardButton.addEventListener('click', () => {
+          console.log(`(${j},${i})`);
+        })
+      } else {
+        boardButton.classList.add('board-white');
+    }
 
       if (board[i][j] == 'W') {
         const whitePawn = document.createElement('div');
@@ -147,10 +93,11 @@ const drawBoard = () => {
         boardButton.appendChild(whitePawn);
       }
 
-
-      boardButton.addEventListener('click', () => {
-        console.log(`(${j},${i})`);
-      })
+      if (!isWhite(i,j)) {
+        boardButton.addEventListener('click', () => {
+          console.log(`(${j},${i})`);
+        })
+      }
       boardRow.appendChild(boardButton);
     }
     boardContainer.appendChild(boardRow);
@@ -173,8 +120,4 @@ const drawBoardWithInfo = () => {
 
 drawBoardWithInfo();
 
-
-// drawInitialCheckerPawns();
-
-// const board = calculateInitialBoard();
 consoleLogBoard(board);
