@@ -20,7 +20,6 @@ body {
 .board {
   background-color: #b1b1b1;
   height: auto;
-  /* overflow: auto; */
   overflow:hidden;
   display: flex;
   flex-direction: column;
@@ -131,16 +130,16 @@ body {
   background: #495c97;
 }
 
-.white-pawn {
+.pawn {
   height: 40px;
   width: 40px;
-  background-color: rgb(216, 216, 216);
   border-radius: 40px;
 }
 
-.black-pawn {
-  height: 40px;
-  width: 40px;
+.pawn.white {
+  background-color: rgb(216, 216, 216);
+}
+
+.pawn.black {
   background-color: rgb(16, 16, 16);
-  border-radius: 40px;
 }
