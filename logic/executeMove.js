@@ -2,79 +2,95 @@ import { consoleLogBoard } from "./consoleLogBoard.js";
 import { createPawn } from "../ui/createPawn.js";
 import { getBoardButtonCoordinates, getValueOnBoard } from "../utils.js";
 
-const getBeatenPawn = (board, currentX, currentY, moveX, moveY, isWhiteTurn) => {
+const getBeatenPawn = (board, current, move, isWhiteTurn) => {
   const beatenValue = isWhiteTurn ? 'B' : 'W';
 
-  const stepX = currentX > moveX ? 1 : -1;
-  const stepY = currentY > moveY ? 1 : -1;
+  const stepX = current.x > move.x ? 1 : -1;
+  const stepY = current.y > move.y ? 1 : -1;
 
-  let beatenX = moveX, beatenY = moveY;
+  let beatenX = move.x, beatenY = move.y;
   do {
     beatenX += stepX;
     beatenY += stepY;
   } while (getValueOnBoard(board, beatenX, beatenY) !== beatenValue);
 
-  return [beatenX, beatenY];
+  return {x: beatenX, y: beatenY};
 }
 
 
+const removePawnFromBoard = (board, pawn) => {
+  document.getElementById(`board-button-${pawn.x}-${pawn.y}`).innerHTML = null;
+  board[pawn.y][pawn.x] = '*';
+}
+
+const pawnMove = (parent, board, from, to, isWhiteTurn) => {
+  parent.appendChild(createPawn(isWhiteTurn));
+  board[to.y][to.x] = isWhiteTurn ? 'W' : 'B';
+
+  removePawnFromBoard(board, from); 
+}
 
 const executeMove = (
-  boardElem, board, clickedBox, currentPawn, possibleMoves, possibleBeatings, isWhiteTurn
+  boardElem, board, clickedBox, currentPawn, moveOptions, captureOptions, isWhiteTurn
 ) => {
-  const [clickedBoxX, clickedBoxY] = getBoardButtonCoordinates(clickedBox.id);
+  const clicked = getBoardButtonCoordinates(clickedBox.id);
 
-  for (let move of possibleMoves) {
-    if (move[0] == clickedBoxX && move[1] == clickedBoxY) {
+  console.log('move', moveOptions);
+      console.log('clicked', clicked);
+
+  for (let move of moveOptions) {
+    if (move.x == clicked.x && move.y == clicked.y) {
       boardElem.setAttribute('move-state', 'before-move');
       boardElem.setAttribute('is-moving', isWhiteTurn ? 'black' : 'white');
 
       
-      clickedBox.appendChild(createPawn(isWhiteTurn));
-      board[clickedBoxY][clickedBoxX] = isWhiteTurn ? 'W' : 'B';
 
-      document.getElementById(`board-button-${currentPawn[0]}-${currentPawn[1]}`).innerHTML = null;
-      board[currentPawn[1]][currentPawn[0]] = '*';
       
-      for (let move of possibleMoves) {
-        const b = document.getElementById(`board-button-${move[0]}-${move[1]}`);
+      // clickedBox.appendChild(createPawn(isWhiteTurn));
+      // board[clicked.y][clicked.x] = isWhiteTurn ? 'W' : 'B';
+
+      // document.getElementById(`board-button-${currentPawn[0]}-${currentPawn[1]}`).innerHTML = null;
+      // board[currentPawn[1]][currentPawn[0]] = '*';
+      pawnMove(clickedBox, board, currentPawn, clicked, isWhiteTurn);
+      
+      for (let move of moveOptions) {
+        const b = document.getElementById(`board-button-${move.x}-${move.y}`);
         b.classList.remove('pink');
       }
 
-      for (let beating of possibleBeatings) {
-        const b = document.getElementById(`board-button-${beating[0]}-${beating[1]}`);
+      for (let capture of captureOptions) {
+        const b = document.getElementById(`board-button-${capture.x}-${capture.y}`);
         b.classList.remove('red');
       }
 
       break;
     }
   }
-  for (let beating of possibleBeatings) {
-    if (beating[0] == clickedBoxX && beating[1] == clickedBoxY) {
+  for (let beating of captureOptions) {
+    if (beating.x == clicked.x && beating.x == clicked.y) {
       boardElem.setAttribute('move-state', 'before-move');
       boardElem.setAttribute('is-moving', isWhiteTurn ? 'black' : 'white');
 
       clickedBox.appendChild(createPawn(isWhiteTurn));
-      board[clickedBoxY][clickedBoxX] = isWhiteTurn ? 'W' : 'B';
+      board[clicked.y][clicked.x] = isWhiteTurn ? 'W' : 'B';
 
       document.getElementById(`board-button-${currentPawn[0]}-${currentPawn[1]}`).innerHTML = null;
       board[currentPawn[1]][currentPawn[0]] = '*';
 
-      for (let move of possibleMoves) {
+      for (let move of moveOptions) {
         const b = document.getElementById(`board-button-${move[0]}-${move[1]}`);
         b.classList.remove('pink');
       }
 
       // add handling of beating
       // remove pawn which has been beaten
-      const [beatenX, beatenY] = getBeatenPawn(board, currentPawn[0], currentPawn[1], beating[0], beating[1], isWhiteTurn)
+      const beaten = getBeatenPawn(board, {x: currentPawn[0], y: currentPawn[1]}, beating, isWhiteTurn)
 
-      // const [beatenX, beatenY] = [2,3];
-      document.getElementById(`board-button-${beatenX}-${beatenY}`).innerHTML = null;
-      board[beatenY][beatenX] = '*';
+      document.getElementById(`board-button-${beaten.y}-${beaten.y}`).innerHTML = null;
+      board[beaten.y][beaten.x] = '*';
 
-      for (let beating of possibleBeatings) {
-        const b = document.getElementById(`board-button-${beating[0]}-${beating[1]}`);
+      for (let beating of captureOptions) {
+        const b = document.getElementById(`board-button-${beating.x}-${beating.y}`);
         b.classList.remove('red');
       }
     }

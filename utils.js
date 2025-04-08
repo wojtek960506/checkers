@@ -1,7 +1,9 @@
 const getBoardButtonCoordinates = (buttonId) => {
   const re = /^board-button-\d+-\d+$/;
   if (!re.test(buttonId)) return null;
-  return buttonId.match(/\d+/g).map(e => parseInt(e)); // return coordinates as [x(j),y(i)]
+  // return coordinates as [x(j),y(i)]
+  const coordinates = buttonId.match(/\d+/g).map(e => parseInt(e));
+  return {x: coordinates[0], y: coordinates[1]}
 }
 
 const getValueOnBoard = (board, x, y) => {

@@ -18,13 +18,13 @@ export const boardClickHandler = (event, boardElem, board) => {
 
   let isWhiteTurn = boardElem.getAttribute('is-moving') === 'white';
   let moveState = boardElem.getAttribute('move-state');
-  let possibleMoves = JSON.parse(boardElem.getAttribute('possible-moves'));
-  let possibleBeatings = JSON.parse(boardElem.getAttribute('possible-beatings'));
+  let moveOptions = JSON.parse(boardElem.getAttribute('move-options'));
+  let captureOptions = JSON.parse(boardElem.getAttribute('capture-options'));
   let currentPawn = JSON.parse(boardElem.getAttribute('current-pawn'));
   
-  const [clickedBoxX, clickedBoxY] = getBoardButtonCoordinates(clickedBox.id);
+  const clicked = getBoardButtonCoordinates(clickedBox.id);
 
-  const boardValue = board[clickedBoxY][clickedBoxX];
+  const boardValue = board[clicked.y][clicked.x];
 
   switch (boardValue) {
     case 'W':
@@ -33,7 +33,7 @@ export const boardClickHandler = (event, boardElem, board) => {
           handleBeforeMoveWhite(boardElem, board, clickedBox);         
         }
         if (moveState == 'during-move') {
-          cancelMove(boardElem, clickedBox, currentPawn, possibleMoves, possibleBeatings);
+          cancelMove(boardElem, clickedBox, currentPawn, moveOptions, captureOptions);
         }
       }
       break;
@@ -43,13 +43,13 @@ export const boardClickHandler = (event, boardElem, board) => {
           handleBeforeMoveBlack(boardElem, board, clickedBox);
         }
         if (moveState == 'during-move') {
-          cancelMove(boardElem, clickedBox, currentPawn, possibleMoves, possibleBeatings);    
+          cancelMove(boardElem, clickedBox, currentPawn, moveOptions, captureOptions);    
         }
       }
       break;
     case '*':
       if (moveState == 'during-move') {
-        executeMove(boardElem, board, clickedBox, currentPawn, possibleMoves, possibleBeatings, isWhiteTurn);
+        executeMove(boardElem, board, clickedBox, currentPawn, moveOptions, captureOptions, isWhiteTurn);
       }
       break;
     default:
