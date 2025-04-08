@@ -44,10 +44,6 @@ const executeMove = (
       boardElem.setAttribute('move-state', 'before-move');
       boardElem.setAttribute('is-moving', isWhiteTurn ? 'black' : 'white');
 
-      // after move we should check for the possibilities of
-      // captures for the opponent and allow only for such moves
-      // TODO
-
       break;
     }
   }

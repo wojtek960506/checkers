@@ -56,6 +56,10 @@ const getMovesAndCaptures = (board, clicked, isWhite) => {
     addMove(board, moveOptions, captureOptions, {x: moveX, y: fwdOptionY}, clicked, isWhite, true);
     addMove(board, moveOptions, captureOptions, {x: moveX, y: bwdOptionY}, clicked, isWhite, false);
   }
+
+  // when there are some options to capture we have to capture
+  if (captureOptions.length > 0) moveOptions.splice(0);
+
   return { moveOptions, captureOptions }
 }
 
