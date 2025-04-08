@@ -1,6 +1,6 @@
 import { consoleLogBoard } from "./consoleLogBoard.js";
 import { createPawn } from "../ui/createPawn.js";
-import { getBoardButtonCoordinates } from "../utils.js";
+import { getBoardButtonCoordinates, getValueOnBoard } from "../utils.js";
 
 const getBeatenPawn = (board, currentX, currentY, moveX, moveY, isWhiteTurn) => {
   const beatenValue = isWhiteTurn ? 'B' : 'W';
