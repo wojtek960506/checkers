@@ -8,6 +8,9 @@ const handleBeforeMove = (boardElem, board, clickedBox, isWhite) => {
     board, clickedBoxX, clickedBoxY, isWhite
   );
 
+  // pawn cannot make any move
+  if (possibleMoves.length === 0 && possibleBeatings.length === 0) return;
+
   // mark possible moves on board
   for (let move of possibleMoves) {
     const b = document.getElementById(`board-button-${move[0]}-${move[1]}`);

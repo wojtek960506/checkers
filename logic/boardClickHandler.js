@@ -6,16 +6,6 @@ import { hasClass } from "../utils.js";
 import { handleBeforeMoveBlack, handleBeforeMoveWhite } from "./handleBeforeMove.js";
 
 
-
-
-
-
-
-
-
-
-
-
 export const boardClickHandler = (event, boardElem, board) => {
   let clickedBox;
     
@@ -43,7 +33,7 @@ export const boardClickHandler = (event, boardElem, board) => {
           handleBeforeMoveWhite(boardElem, board, clickedBox);         
         }
         if (moveState == 'during-move') {
-          cancelMove(boardElem, clickedBox, currentPawn, possibleMoves);
+          cancelMove(boardElem, clickedBox, currentPawn, possibleMoves, possibleBeatings);
         }
       }
       break;
@@ -53,7 +43,7 @@ export const boardClickHandler = (event, boardElem, board) => {
           handleBeforeMoveBlack(boardElem, board, clickedBox);
         }
         if (moveState == 'during-move') {
-          cancelMove(boardElem, clickedBox, currentPawn, possibleMoves);    
+          cancelMove(boardElem, clickedBox, currentPawn, possibleMoves, possibleBeatings);    
         }
       }
       break;

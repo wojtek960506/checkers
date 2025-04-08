@@ -27,6 +27,7 @@ const getMoves = (board, clickedBoxX, clickedBoxY, isWhite) => {
   const possibleBeatings = [];
 
   for (let moveX of possibleMoveX) {
+    // -------------------------------------------------------------------------------
     if (isInsideBoard(boardWidth, boardHeight, moveX, possibleFwdMoveY)) {
       const value = getValueOnBoard(board, moveX, possibleFwdMoveY);
       switch (value) {
@@ -36,7 +37,8 @@ const getMoves = (board, clickedBoxX, clickedBoxY, isWhite) => {
             const [nextX, nextY] = getNextOnDiagonal(
               clickedBoxX, clickedBoxY, moveX, possibleFwdMoveY
             );
-            if (getValueOnBoard(board, nextX, nextY) == '*') {
+            if (isInsideBoard(boardWidth, boardHeight, nextX, nextY) && 
+                getValueOnBoard(board, nextX, nextY) == '*') {
               possibleBeatings.push([nextX, nextY]);
             }
           }
@@ -47,16 +49,57 @@ const getMoves = (board, clickedBoxX, clickedBoxY, isWhite) => {
             const [nextX, nextY] = getNextOnDiagonal(
               clickedBoxX, clickedBoxY, moveX, possibleFwdMoveY
             );
-            if (getValueOnBoard(board, nextX, nextY) == '*') {
+            if (isInsideBoard(boardWidth, boardHeight, nextX, nextY) &&
+                getValueOnBoard(board, nextX, nextY) == '*') {
               possibleBeatings.push([nextX, nextY]);
             }
           }
           break;
         case '*':
           possibleMoves.push([moveX, possibleFwdMoveY]);
+          break;
+        default:
+          break;
       }
     }
+    // -------------------------------------------------------------------------------
+
+
+    // -------------------------------------------------------------------------------
+    if (isInsideBoard(boardWidth, boardHeight, moveX, possibleBwdMoveY)) {
+      const value = getValueOnBoard(board, moveX, possibleBwdMoveY);
+      switch (value) {
+        case 'B':
+          if (isWhite) {
+            // next on diagonal for possible beating
+            const [nextX, nextY] = getNextOnDiagonal(
+              clickedBoxX, clickedBoxY, moveX, possibleBwdMoveY
+            );
+            if (getValueOnBoard(board, nextX, nextY) == '*') {
+              possibleBeatings.push([nextX, nextY]);
+            }
+          }
+          break;
+        case 'W':
+          if (!isWhite) {
+            // next on diagonal for possible beating
+            const [nextX, nextY] = getNextOnDiagonal(
+              clickedBoxX, clickedBoxY, moveX, possibleBwdMoveY
+            );
+            if (getValueOnBoard(board, nextX, nextY) == '*') {
+              possibleBeatings.push([nextX, nextY]);
+            }
+          }
+          break;
+        case '*':
+        default:
+          break;
+      }
+    }
+    // -------------------------------------------------------------------------------
   }
+
+  
   
   return {
     possibleMoves, possibleBeatings
