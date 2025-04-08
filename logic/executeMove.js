@@ -1,6 +1,7 @@
 import { consoleLogBoard } from "./consoleLogBoard.js";
 import { createPawn } from "../ui/createPawn.js";
-import { getBoardButtonCoordinates, getValueOnBoard, hideOptions } from "../utils.js";
+import { getBoardButtonCoordinates, getValueOnBoard, hideOptions, showOptions } from "../utils.js";
+import { getMovesAndCaptures } from "./getMovesAndCaptures.js";
 
 const getBeatenPawn = (board, current, move, isWhiteTurn) => {
   const beatenValue = isWhiteTurn ? 'B' : 'W';
@@ -42,6 +43,11 @@ const executeMove = (
 
       boardElem.setAttribute('move-state', 'before-move');
       boardElem.setAttribute('is-moving', isWhiteTurn ? 'black' : 'white');
+
+      // after move we should check for the possibilities of
+      // captures for the opponent and allow only for such moves
+      // TODO
+
       break;
     }
   }
@@ -54,8 +60,22 @@ const executeMove = (
       removePawn(board, beaten);
       hideOptions(captureOptions, 'red');
 
+      const {
+        captureOptions: tmpCaptureOptions
+      } = getMovesAndCaptures(board, clicked, isWhiteTurn);
+      if (tmpCaptureOptions.length > 0) {
+        boardElem.setAttribute('current-pawn', JSON.stringify(clicked));
+        boardElem.setAttribute('move-options', JSON.stringify([]));
+        boardElem.setAttribute('capture-options', JSON.stringify(tmpCaptureOptions));
+        boardElem.setAttribute('is-next-capture', ''); // boolean attribute
+
+        showOptions(tmpCaptureOptions, 'red');
+        break;
+      }
+
       boardElem.setAttribute('move-state', 'before-move');
       boardElem.setAttribute('is-moving', isWhiteTurn ? 'black' : 'white');
+      boardElem.removeAttribute('is-next-capture');
       break;
     }
   }

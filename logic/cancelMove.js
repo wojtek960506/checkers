@@ -1,6 +1,10 @@
 import { getBoardButtonCoordinates } from "../utils.js";
 
 const cancelMove = (boardElem, clickedBox, currentPawn, moveOptions, captureOptions) => {
+  if (boardElem.hasAttribute('is-next-capture')) {
+    console.log('during additional capture it not allowed to cancel move')
+    return;
+  }
   const clicked = getBoardButtonCoordinates(clickedBox.id);
   const { x: currentPawnX, y: currentPawnY } = currentPawn;
 
