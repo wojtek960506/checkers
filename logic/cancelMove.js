@@ -1,17 +1,17 @@
 import { getBoardButtonCoordinates } from "../utils.js";
 
-const cancelMove = (boardElem, clickedBox, currentPawn, possibleMoves, possibleBeatings) => {
+const cancelMove = (boardElem, clickedBox, currentPawn, moveOptions, captureOptions) => {
   const clicked = getBoardButtonCoordinates(clickedBox.id);
-  const [currentPawnX, currentPawnY] = currentPawn;
+  const { x: currentPawnX, y: currentPawnY } = currentPawn;
 
   if (clicked.x == currentPawnX && clicked.y == currentPawnY) {
     boardElem.setAttribute('move-state', 'before-move');
-    for (let move of possibleMoves) {
-      const b = document.getElementById(`board-button-${move[0]}-${move[1]}`);
+    for (let move of moveOptions) {
+      const b = document.getElementById(`board-button-${move.x}-${move.y}`);
       b.classList.remove('pink');
     }
-    for (let beating of possibleBeatings) {
-      const b = document.getElementById(`board-button-${beating[0]}-${beating[1]}`);
+    for (let capture of captureOptions) {
+      const b = document.getElementById(`board-button-${capture.x}-${capture.y}`);
       b.classList.remove('red');
     }
   }

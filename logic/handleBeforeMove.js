@@ -1,4 +1,4 @@
-import { getBoardButtonCoordinates } from "../utils.js";
+import { getBoardButtonCoordinates, showOptions } from "../utils.js";
 import { getMovesAndCaptures } from "./getMovesAndCaptures.js";
 
 const handleBeforeMove = (boardElem, board, clickedBox, isWhite) => {
@@ -12,16 +12,19 @@ const handleBeforeMove = (boardElem, board, clickedBox, isWhite) => {
   if (moveOptions.length === 0 && captureOptions.length === 0) return;
   
   // mark possible moves on board
-  for (let move of moveOptions) {
-    const b = document.getElementById(`board-button-${move.x}-${move.y}`);
-    b.classList.add('pink');
-  }
+  // for (let move of moveOptions) {
+  //   const b = document.getElementById(`board-button-${move.x}-${move.y}`);
+  //   b.classList.add('pink');
+  // }
+  showOptions(moveOptions, 'pink');
+  showOptions(captureOptions, 'red');
 
-  // mark possible beatings on board
-  for (let beating of captureOptions) {
-    const b = document.getElementById(`board-button-${beating.x}-${beating.y}`);
-    b.classList.add('red');
-  }
+
+  // // mark possible beatings on board
+  // for (let beating of captureOptions) {
+  //   const b = document.getElementById(`board-button-${beating.x}-${beating.y}`);
+  //   b.classList.add('red');
+  // }
  
   boardElem.setAttribute('move-options', JSON.stringify(moveOptions));
   boardElem.setAttribute('capture-options', JSON.stringify(captureOptions));

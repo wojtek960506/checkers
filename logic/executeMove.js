@@ -12,7 +12,7 @@ const getBeatenPawn = (board, current, move, isWhiteTurn) => {
   do {
     beatenX += stepX;
     beatenY += stepY;
-  } while (getValueOnBoard(board, beatenX, beatenY) !== beatenValue);
+  } while (getValueOnBoard(board, { x: beatenX, y: beatenY }) !== beatenValue);
 
   return {x: beatenX, y: beatenY};
 }
@@ -34,9 +34,6 @@ const executeMove = (
   boardElem, board, clickedBox, currentPawn, moveOptions, captureOptions, isWhiteTurn
 ) => {
   const clicked = getBoardButtonCoordinates(clickedBox.id);
-
-  console.log('move', moveOptions);
-      console.log('clicked', clicked);
 
   for (let move of moveOptions) {
     if (move.x == clicked.x && move.y == clicked.y) {
@@ -67,26 +64,26 @@ const executeMove = (
     }
   }
   for (let beating of captureOptions) {
-    if (beating.x == clicked.x && beating.x == clicked.y) {
+    if (beating.x == clicked.x && beating.y == clicked.y) {
       boardElem.setAttribute('move-state', 'before-move');
       boardElem.setAttribute('is-moving', isWhiteTurn ? 'black' : 'white');
 
       clickedBox.appendChild(createPawn(isWhiteTurn));
       board[clicked.y][clicked.x] = isWhiteTurn ? 'W' : 'B';
 
-      document.getElementById(`board-button-${currentPawn[0]}-${currentPawn[1]}`).innerHTML = null;
-      board[currentPawn[1]][currentPawn[0]] = '*';
+      document.getElementById(`board-button-${currentPawn.x}-${currentPawn.y}`).innerHTML = null;
+      board[currentPawn.y][currentPawn.x] = '*';
 
       for (let move of moveOptions) {
-        const b = document.getElementById(`board-button-${move[0]}-${move[1]}`);
+        const b = document.getElementById(`board-button-${move.x}-${move.y}`);
         b.classList.remove('pink');
       }
 
       // add handling of beating
       // remove pawn which has been beaten
-      const beaten = getBeatenPawn(board, {x: currentPawn[0], y: currentPawn[1]}, beating, isWhiteTurn)
+      const beaten = getBeatenPawn(board, {x: currentPawn.x, y: currentPawn.y}, beating, isWhiteTurn)
 
-      document.getElementById(`board-button-${beaten.y}-${beaten.y}`).innerHTML = null;
+      document.getElementById(`board-button-${beaten.x}-${beaten.y}`).innerHTML = null;
       board[beaten.y][beaten.x] = '*';
 
       for (let beating of captureOptions) {
