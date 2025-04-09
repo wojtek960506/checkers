@@ -137,11 +137,11 @@ body {
 }
 
 .pawn.white {
-  background-color: rgb(216, 216, 216);
+  background-color: rgb(202, 202, 202);
 }
 
 .pawn.black {
-  background-color: rgb(16, 16, 16);
+  background-color: rgb(15, 15, 15);
 }
 
 .pink {
@@ -150,4 +150,8 @@ body {
 
 .red {
   background-color: red;
+}
+
+.queen {
+  border: 5px solid rgb(182, 156, 13);
 }

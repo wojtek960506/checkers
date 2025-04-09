@@ -33,7 +33,7 @@ const addMove = (
 ) => {
   if (isInsideBoard(board, move)) {
     const value = getValueOnBoard(board, move);
-    if ((value === 'B' && isWhite) || (value === 'W' && !isWhite)) {
+    if ((['B','BQ'].includes(value) && isWhite) || (['W', 'WQ'].includes(value) && !isWhite)) {
       addCaptureOption(captureOptions, board, clicked, move);
     } 
     if (onlyForwards && value === '*') {
@@ -42,25 +42,27 @@ const addMove = (
   }
 }
 
-const getMovesAndCaptures = (board, clicked, isWhite) => {
+const getMovesAndCaptures = (board, clicked, isWhite, isQueen) => {
   const { x: clickedX, y: clickedY } = clicked;
 
-  const fwdOptionY = isWhite ? clickedY - 1 : clickedY + 1;
-  const bwdOptionY = isWhite ? clickedY + 1 : clickedY - 1;
-  const movesX = [clickedX - 1, clickedX + 1];
+    const fwdOptionY = isWhite ? clickedY - 1 : clickedY + 1;
+    const bwdOptionY = isWhite ? clickedY + 1 : clickedY - 1;
+    const movesX = [clickedX - 1, clickedX + 1];
 
-  const moveOptions = [];
-  const captureOptions = [];
+    const moveOptions = [];
+    const captureOptions = [];
 
-  for (let moveX of movesX) {
-    addMove(board, moveOptions, captureOptions, {x: moveX, y: fwdOptionY}, clicked, isWhite, true);
-    addMove(board, moveOptions, captureOptions, {x: moveX, y: bwdOptionY}, clicked, isWhite, false);
-  }
+    for (let moveX of movesX) {
+      addMove(board, moveOptions, captureOptions, {x: moveX, y: fwdOptionY}, clicked, isWhite, true);
+      // queen can additionally move one step backwards 
+      // TODO add handling of unlimited length of queen move
+      addMove(board, moveOptions, captureOptions, {x: moveX, y: bwdOptionY}, clicked, isWhite, isQueen);
+    }
 
-  // when there are some options to capture we have to capture
-  if (captureOptions.length > 0) moveOptions.splice(0);
+    // when there are some options to capture we have to capture
+    if (captureOptions.length > 0) moveOptions.splice(0);
 
-  return { moveOptions, captureOptions }
+    return { moveOptions, captureOptions }
 }
 
 export { getMovesAndCaptures };

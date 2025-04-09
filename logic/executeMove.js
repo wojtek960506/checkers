@@ -4,7 +4,7 @@ import { getBoardButtonCoordinates, getValueOnBoard, hideOptions, showOptions } 
 import { getMovesAndCaptures } from "./getMovesAndCaptures.js";
 
 const getBeatenPawn = (board, current, move, isWhiteTurn) => {
-  const beatenValue = isWhiteTurn ? 'B' : 'W';
+  const beatenValue = isWhiteTurn ? ['BQ','B'] : ['WQ', 'W'];
 
   const stepX = current.x > move.x ? 1 : -1;
   const stepY = current.y > move.y ? 1 : -1;
@@ -13,7 +13,11 @@ const getBeatenPawn = (board, current, move, isWhiteTurn) => {
   do {
     beatenX += stepX;
     beatenY += stepY;
-  } while (getValueOnBoard(board, { x: beatenX, y: beatenY }) !== beatenValue);
+  } while (!beatenValue.includes(getValueOnBoard(board, { x: beatenX, y: beatenY })));
+
+  console.log('beatenValue', beatenValue);
+  console.log('x', beatenX);
+  console.log('y', beatenY);
 
   return {x: beatenX, y: beatenY};
 }
@@ -23,11 +27,39 @@ const removePawn = (board, pawn) => {
   board[pawn.y][pawn.x] = '*';
 }
 
-const movePawn = (parent, board, from, to, isWhiteTurn) => {
-  parent.appendChild(createPawn(isWhiteTurn));
-  board[to.y][to.x] = isWhiteTurn ? 'W' : 'B';
+const movePawn = (parent, board, from, to, isWhiteTurn, isQueen) => {
+  console.log('isQueen movePawn', isQueen);
+  parent.appendChild(createPawn(isWhiteTurn, isQueen));
+  board[to.y][to.x] = isWhiteTurn ? (isQueen ? 'WQ' : 'W') : (isQueen ? 'BQ' : 'B');
 
   removePawn(board, from); 
+}
+
+const checkQueenTurningRow = (board, pawnPosition, isWhite) => {
+  if (isWhite) {
+    return pawnPosition.y === 0;
+  } else {
+    return pawnPosition.y === board.length - 1;
+  }
+}
+
+const handleTurningIntoQueen = (board, pawnPosition, isWhite) => {
+  if (checkQueenTurningRow(board, pawnPosition, isWhite)) {
+    document.getElementById(`board-button-${pawnPosition.x}-${pawnPosition.y}`)
+      .firstChild.classList.add('queen');
+    board[pawnPosition.y][pawnPosition.x] = isWhite ? 'WQ' : 'BQ';
+  }
+}
+
+const findOpponentPawns = (board, isWhiteTurn) => {
+  const opponentValues = isWhiteTurn ? ['B', 'BQ'] : ['W', 'WQ'];
+  let opponentPawnsCount = 0;
+  for (const row of board) {
+    for (const value of row) {
+      if (opponentValues.includes(value)) opponentPawnsCount++;
+    }
+  }
+  return opponentPawnsCount;
 }
 
 const executeMove = (
@@ -35,11 +67,16 @@ const executeMove = (
 ) => {
   const clicked = getBoardButtonCoordinates(clickedBox.id);
 
+  const isQueen = /Q$/.test(getValueOnBoard(board, currentPawn));
+
   for (let move of moveOptions) {
     if (move.x == clicked.x && move.y == clicked.y) {
-      movePawn(clickedBox, board, currentPawn, clicked, isWhiteTurn); 
+      movePawn(clickedBox, board, currentPawn, clicked, isWhiteTurn, isQueen); 
       hideOptions(moveOptions, 'pink');
       hideOptions(captureOptions, 'red');
+
+      // handle turning into queen
+      handleTurningIntoQueen(board, clicked, isWhiteTurn)
 
       boardElem.setAttribute('move-state', 'before-move');
       boardElem.setAttribute('is-moving', isWhiteTurn ? 'black' : 'white');
@@ -49,13 +86,14 @@ const executeMove = (
   }
   for (let beating of captureOptions) {
     if (beating.x == clicked.x && beating.y == clicked.y) {
-      movePawn(clickedBox, board, currentPawn, clicked, isWhiteTurn);
+      movePawn(clickedBox, board, currentPawn, clicked, isWhiteTurn, isQueen);
       hideOptions(moveOptions, 'pink');
 
       const beaten = getBeatenPawn(board, currentPawn, beating, isWhiteTurn);
       removePawn(board, beaten);
       hideOptions(captureOptions, 'red');
 
+      // handle possible next capture
       const {
         captureOptions: tmpCaptureOptions
       } = getMovesAndCaptures(board, clicked, isWhiteTurn);
@@ -68,6 +106,22 @@ const executeMove = (
         showOptions(tmpCaptureOptions, 'red');
         break;
       }
+
+      // handle turning into queen
+      handleTurningIntoQueen(board, clicked, isWhiteTurn)
+
+      // check end of the game
+      const opponentPawnsCount = findOpponentPawns(board, isWhiteTurn);
+      console.log(`${isWhiteTurn ? 'WHITE' : 'BLACK'} move - ${isWhiteTurn ? 'BLACK' : 'WHITE'} pawns: ${opponentPawnsCount}`);
+      if (opponentPawnsCount === 0) {
+        console.log('end of game');
+        const c = document.getElementById('board');
+        const f = document.getElementById('final-result');
+        c.innerHTML = null;
+        f.innerText = `Winner is ${isWhiteTurn ? 'WHITE' : 'BLACK'}`;
+        return;
+      }
+
 
       boardElem.setAttribute('move-state', 'before-move');
       boardElem.setAttribute('is-moving', isWhiteTurn ? 'black' : 'white');

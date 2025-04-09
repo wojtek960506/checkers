@@ -3,7 +3,7 @@ const getBoardInfoLetters = (boardWidth) => {
   for (let i = 0 ; i < boardWidth ; i++) {
     letters.push(String.fromCharCode(65 + i));
   }
-  return `& ${letters.join(' ')} &`;
+  return `& ${letters.map(l => l.padStart(2, ' ')).join(' ')} &`;
 }
 
 export const consoleLogBoard = (board) => {
@@ -13,7 +13,7 @@ export const consoleLogBoard = (board) => {
   result += `${getBoardInfoLetters(boardWidth)}\n`;
   for (const [index, row] of board.entries()) {
     result += `${index + 1} `;
-    result += row.join(' ')
+    result += row.map(r => r.padStart(2, ' ')).join(' ')
     result += ` ${index + 1}\n`;
   }
   result += `${getBoardInfoLetters(boardWidth)}\n`;

@@ -37,10 +37,30 @@ export const boardClickHandler = (event, boardElem, board) => {
         }
       }
       break;
+    case 'WQ':
+      if (isWhiteTurn) {
+        if (moveState == 'before-move') {
+          handleBeforeMoveWhite(boardElem, board, clickedBox, true);         
+        }
+        if (moveState == 'during-move') {
+          cancelMove(boardElem, clickedBox, currentPawn, moveOptions, captureOptions);
+        }
+      }
+      break;
     case 'B':
       if (!isWhiteTurn) {
         if (moveState == 'before-move') {
           handleBeforeMoveBlack(boardElem, board, clickedBox);
+        }
+        if (moveState == 'during-move') {
+          cancelMove(boardElem, clickedBox, currentPawn, moveOptions, captureOptions);    
+        }
+      }
+      break;
+    case 'BQ':
+      if (!isWhiteTurn) {
+        if (moveState == 'before-move') {
+          handleBeforeMoveBlack(boardElem, board, clickedBox, true);
         }
         if (moveState == 'during-move') {
           cancelMove(boardElem, clickedBox, currentPawn, moveOptions, captureOptions);    

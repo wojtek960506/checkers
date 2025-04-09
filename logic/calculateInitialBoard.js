@@ -1,8 +1,8 @@
-export const calculateInitialBoard = (boardHeight, boardWidth) => {
+export const calculateInitialBoard = (boardHeight, boardWidth, rowsWithPawns) => {
   // board box with white pawn is marked with 'W'
-  // board box with white king is marked with 'K'
+  // board box with white queen is marked with 'WQ'
   // board box with black pawn is marked with 'B'
-  // board box with black king is marked with 'Q'
+  // board box with black queen is marked with 'BQ'
   // empty bord box is marked with '*'
   
   const board = [];
@@ -15,14 +15,14 @@ export const calculateInitialBoard = (boardHeight, boardWidth) => {
   }
 
   // draw white pawns (last 3 rows)
-  for (let i = boardHeight - 1 ; i > boardHeight - 4 ; i--) {
+  for (let i = boardHeight-1 ; i > boardHeight-1-rowsWithPawns ; i--) {
     for (let j = 0 ; j < boardWidth; j++) {
       if ((i + j) % 2 != 0) board[i][j] = 'W'; 
     }
   }
 
   // draw black pawns (first 3 rows)
-  for (let i = 0 ; i < 3 ; i++) {
+  for (let i = 0 ; i < rowsWithPawns ; i++) {
     for (let j = 0 ; j < boardWidth; j++) {
       if ((i + j) % 2 != 0) board[i][j] = 'B';
     }

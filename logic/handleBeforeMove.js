@@ -1,11 +1,11 @@
 import { getBoardButtonCoordinates, showOptions } from "../utils.js";
 import { getMovesAndCaptures } from "./getMovesAndCaptures.js";
 
-const handleBeforeMove = (boardElem, board, clickedBox, isWhite) => {
+const handleBeforeMove = (boardElem, board, clickedBox, isQueen, isWhite) => {
   const clicked = getBoardButtonCoordinates(clickedBox.id);
   
   const { moveOptions, captureOptions } = getMovesAndCaptures(
-    board, clicked, isWhite
+    board, clicked, isWhite, isQueen
   );
 
   // pawn cannot make a move
@@ -14,12 +14,12 @@ const handleBeforeMove = (boardElem, board, clickedBox, isWhite) => {
   // check if there are any capturing options for other pawns
   // in case of the clicked pawn has no options to capture
   if (captureOptions.length === 0) {
-    const currentMoving = isWhite ? 'W' : 'B';
+    const currentlyMoving = isWhite ? ['W', 'WQ'] : ['B', 'BQ'];
     for (let [y, row] of board.entries()) {
       for (let [x, value] of row.entries()) {
-        if (value === currentMoving) {
+        if (currentlyMoving.includes(value)) {
           const { captureOptions: tmpCaptureOptions } = getMovesAndCaptures(
-            board, { x, y }, isWhite
+            board, { x, y }, isWhite, isQueen
           );
           if (tmpCaptureOptions.length > 0) return;
         }
@@ -36,12 +36,12 @@ const handleBeforeMove = (boardElem, board, clickedBox, isWhite) => {
   boardElem.setAttribute('current-pawn', JSON.stringify(clicked));
 }
 
-const handleBeforeMoveBlack = (boardElem, board, clickedBox) => {
-  handleBeforeMove(boardElem, board, clickedBox, false);
+const handleBeforeMoveBlack = (boardElem, board, clickedBox, isQueen = false) => {
+  handleBeforeMove(boardElem, board, clickedBox, isQueen, false);
 }
 
-const handleBeforeMoveWhite = (boardElem, board, clickedBox) => {
-  handleBeforeMove(boardElem, board, clickedBox, true);
+const handleBeforeMoveWhite = (boardElem, board, clickedBox, isQueen = false) => {
+  handleBeforeMove(boardElem, board, clickedBox, isQueen, true);
 }
 
 export { handleBeforeMoveBlack, handleBeforeMoveWhite };
