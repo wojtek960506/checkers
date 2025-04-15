@@ -1,6 +1,3 @@
-// personal access token wz_token_08_03_25
-// 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
-
 import { consoleLogBoard } from "./logic/consoleLogBoard.js";
 import { calculateInitialBoard } from "./logic/calculateInitialBoard.js";
 import { drawBoardWithInfo } from "./ui/drawBoardWithInfo.js";
